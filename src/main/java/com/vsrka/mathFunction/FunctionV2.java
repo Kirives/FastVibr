@@ -65,6 +65,9 @@ public class FunctionV2 {
         List<Double> transformed = data.stream()
                 .map(x -> (x - min) / (max - min))
                 .collect(Collectors.toList());
+        if(Double.isNaN(initialMoment(transformed, 1))){
+            return 0;
+        }
         return initialMoment(transformed, 1);
     }
 
@@ -79,6 +82,9 @@ public class FunctionV2 {
         for (double y : transformed) {
             sum += Math.pow(y - mean, 2);
         }
+        if(Double.isNaN(Math.sqrt(sum / (data.size() - 1)))){
+            return 0;
+        }
         return Math.sqrt(sum / (data.size() - 1));
     }
 
@@ -87,6 +93,9 @@ public class FunctionV2 {
         double max = maximum(data);
         double mean = meanInRange(data);
         double std = stdInRange(data);
+        if(Double.isNaN(std / mean)){
+            return 0;
+        }
         return std / mean;
     }
 
@@ -94,6 +103,9 @@ public class FunctionV2 {
         double min=minimum(data);
         double max = maximum(data);
         double std = stdInRange(data);
+        if(Double.isNaN(std / Math.sqrt(data.size()))){
+            return 0;
+        }
         return std / Math.sqrt(data.size());
     }
 

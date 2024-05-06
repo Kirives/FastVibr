@@ -4,6 +4,7 @@ import com.vsrka.devices.*;
 import com.vsrka.readingAndWriting.*;
 import com.vsrka.mathFunction.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,54 +73,93 @@ public class deviceCRUD {
         calculateParameter(devices.get("мн-12").getAllSignal().get(0).getSignal());
     }
 
-    public void calculateParameter(List<Double> signal){
-        //начальные моменты
-        long startTime = System.nanoTime();
-        System.out.println(FunctionV1.calculateMoment(signal,1));
-        System.out.println(FunctionV1.calculateMoment(signal,2));
-        System.out.println(FunctionV1.calculateMoment(signal,3));
-        System.out.println(FunctionV1.calculateMoment(signal,4));
-        //System.out.println(FunctionV1.calculateCentralMoment(signal,1));
-        System.out.println(FunctionV1.calculateCentralMoment(signal,2));
-        System.out.println(FunctionV1.calculateCentralMoment(signal,3));
-        System.out.println(FunctionV1.calculateCentralMoment(signal,4));
-        System.out.println(FunctionV1.calculateStandardDeviation(signal));
-        System.out.println(FunctionV1.calculateMinimum(signal));
-        System.out.println(FunctionV1.calculateMaximum(signal));
-        System.out.println(FunctionV1.calculateSkewness(signal));
-        //System.out.println(FunctionV1.calculateKurtosis(signal));
-        //System.out.println(FunctionV1.calculateMedian(signal));
-//        System.out.println(FunctionV1.calculateMeanOnInterval(signal));
-//        System.out.println(FunctionV1.calculateStdDevOnInterval(signal));
-//        System.out.println(FunctionV1.calculateCoefficientOfVariationOnInterval(signal));
-//        System.out.println(FunctionV1.calculateStandardErrorOnInterval(signal));
-        long endTime = System.nanoTime();
-        System.out.print("Time ");
-        System.out.println(endTime-startTime);
-        startTime = System.nanoTime();
-        System.out.println(FunctionV2.initialMoment(signal,1));
-        System.out.println(FunctionV2.initialMoment(signal,2));
-        System.out.println(FunctionV2.initialMoment(signal,3));
-        System.out.println(FunctionV2.initialMoment(signal,4));
-        //System.out.println(FunctionV2.centralMoment(signal,1));
-        System.out.println(FunctionV2.centralMoment(signal,2));
-        System.out.println(FunctionV2.centralMoment(signal,3));
-        System.out.println(FunctionV2.centralMoment(signal,4));
-        System.out.println(FunctionV2.standardDeviation(signal));
-        System.out.println(FunctionV2.minimum(signal));
-        System.out.println(FunctionV2.maximum(signal));
-        System.out.println(FunctionV2.skewness(signal));
-        System.out.println(FunctionV2.kurtosis(signal));
-        System.out.println(FunctionV2.median(signal));
-        //тут вроде считает
-        System.out.println(FunctionV2.meanInRange(signal));
-        System.out.println(FunctionV2.stdInRange(signal));
-        System.out.println(FunctionV2.variationCoeffInRange(signal));
-        System.out.println(FunctionV2.stdErrorInRange(signal));
-        endTime = System.nanoTime();
-        System.out.print("Time ");
-        System.out.println(endTime-startTime);
+    public List<Double> calculateParameter(List<Double> signal){
+        List<Double> result = new ArrayList<>();
+
+        result.add(FunctionV2.initialMoment(signal,1));
+        result.add(FunctionV2.initialMoment(signal,2));
+        result.add(FunctionV2.initialMoment(signal,3));
+        result.add(FunctionV2.initialMoment(signal,4));
+        result.add(FunctionV2.centralMoment(signal,2));
+        result.add(FunctionV2.centralMoment(signal,3));
+        result.add(FunctionV2.centralMoment(signal,4));
+        result.add(FunctionV2.standardDeviation(signal));
+        result.add(FunctionV2.minimum(signal));
+        result.add(FunctionV2.maximum(signal));
+        result.add(FunctionV2.skewness(signal));
+        result.add(FunctionV2.kurtosis(signal));
+        result.add(FunctionV2.median(signal));
+        result.add(FunctionV2.meanInRange(signal));
+        result.add(FunctionV2.stdInRange(signal));
+        result.add(FunctionV2.variationCoeffInRange(signal));
+        result.add(FunctionV2.stdErrorInRange(signal));
+
+        return result;
     }
+
+
+    public void calculateParameters() throws Exception {
+
+        try {
+            workWithDatabase database = new workWithDatabase();
+            for (Device device : devices.values()) {
+                for (Signal signal : device.getAllSignal()) {
+                    database.insertString();
+                    List<Double> signals = signal.getSignal();
+                    int startIndex = signals.size() % 10000;
+                    int intervalNumber = 0;
+                    while (startIndex < signals.size()) {
+                        List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
+                        for (int i = 0; i < result.size(); i++) {
+                            database.insertDataBatch(device.getName(), "all", signal.getNumber(), 1, intervalNumber, i, result.get(i));
+                        }
+                        startIndex += 10;
+                        intervalNumber++;
+                    }
+                    database.insertBatch();
+                }
+            }
+            database.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void calculateParametersSecond() throws Exception {
+
+        workWithDatabase database = new workWithDatabase();
+        for (Device device : devices.values()) {
+            for(Signal signal : device.getAllSignal()) {
+                database.insertString();
+                int startIntervalNumber = 0;
+
+
+                for(int i = 0; i < 16; i++){
+                    //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
+                    List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),1,i);
+                    int startIndex = 0;
+                    //Номер интервала как раз обнуляется с каждой карактеристикой
+                    int intervalNumber = 0;
+                    database.insertString();
+                    while(startIndex < signals.size()){
+                        List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
+                        for (int j = 0; j < result.size(); j++) {
+                            database.insertDataBatch(device.getName(), "all", signal.getNumber(), 2, intervalNumber, i*17+j, result.get(j));
+                        }
+                        startIndex += 10;
+                        intervalNumber++;
+                    }
+                    database.insertBatch();
+
+
+                }
+            }
+        }
+    }
+
+
 
 }
 

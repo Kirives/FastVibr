@@ -19,7 +19,9 @@ public class App
             deviceCRUD test = new deviceCRUD();
             test.createDevice();
             //test.insertToDatabse();
-            test.testPar();
+            //test.testPar();
+            //test.calculateParameters();
+            test.calculateParametersSecond();
 
             System.out.println("testDir");
         }catch (Exception e) {
