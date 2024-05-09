@@ -20,8 +20,12 @@ public class App
             test.createDevice();
             //test.insertToDatabse();
             //test.testPar();
+            //ФАЗА 1
             //test.calculateParameters();
-            test.calculateParametersSecond();
+            //test.calculateParametersSecondV2();
+            test.calculateParametersThirdV2();
+            //test.calculateParametersFourth();
+            //test.findPearsonBatch();
 
             System.out.println("testDir");
         }catch (Exception e) {

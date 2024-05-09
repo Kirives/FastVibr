@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class deviceCRUD {
 
@@ -98,6 +99,7 @@ public class deviceCRUD {
     }
 
 
+    // тут для 1го уровня
     public void calculateParameters() throws Exception {
 
         try {
@@ -127,6 +129,7 @@ public class deviceCRUD {
     }
 
 
+    //тут определяем для второго уровня
     public void calculateParametersSecond() throws Exception {
 
         workWithDatabase database = new workWithDatabase();
@@ -136,7 +139,7 @@ public class deviceCRUD {
                 int startIntervalNumber = 0;
 
 
-                for(int i = 0; i < 16; i++){
+                for(int i = 0; i < 17; i++){
                     //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
                     List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),1,i);
                     int startIndex = 0;
@@ -155,6 +158,197 @@ public class deviceCRUD {
 
 
                 }
+            }
+        }
+    }
+
+    public void calculateParametersSecondV2() throws Exception {
+
+        //workWithDatabase database = new workWithDatabase();
+        for (Device device : devices.values()) {
+            for(Signal signal : device.getAllSignal()) {
+                //database.insertString();
+                int startIntervalNumber = 0;
+                IntStream.range(0, 17).parallel().forEach(i -> {
+                    try {
+                        workWithDatabase database = new workWithDatabase();
+                        //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
+                        List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),1,i);
+                        int startIndex = 0;
+                        //Номер интервала как раз обнуляется с каждой карактеристикой
+                        int intervalNumber = 0;
+                        database.insertString();
+                        while(startIndex < signals.size()){
+                            List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
+                            for (int j = 0; j < result.size(); j++) {
+                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 2, intervalNumber, i*17+j, result.get(j));
+                            }
+                            startIndex += 10;
+                            intervalNumber++;
+                        }
+                        database.insertBatch();
+                        database.close();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+    }
+
+    //туту определяем для 3го уровня
+    public void calculateParametersThird() throws Exception {
+
+        workWithDatabase database = new workWithDatabase();
+        for (Device device : devices.values()) {
+            for(Signal signal : device.getAllSignal()) {
+                database.insertString();
+                int startIntervalNumber = 0;
+
+
+                for(int i = 0; i < 289; i++){
+                    //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
+                    List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),2,i);
+                    int startIndex = 0;
+                    //Номер интервала как раз обнуляется с каждой карактеристикой
+                    int intervalNumber = 0;
+                    database.insertString();
+                    while(startIndex < signals.size()){
+                        List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
+                        for (int j = 0; j < result.size(); j++) {
+                            database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i*17+j, result.get(j));
+                        }
+                        startIndex += 10;
+                        intervalNumber++;
+                    }
+                    database.insertBatch();
+
+
+                }
+            }
+        }
+    }
+
+    public void calculateParametersThirdV2() throws Exception {
+
+        //workWithDatabase database = new workWithDatabase();
+        for (Device device : devices.values()) {
+            for(Signal signal : device.getAllSignal()) {
+                //database.insertString();
+                workWithDatabase database = new workWithDatabase();
+                HashMap<Integer,List<Double>> resultMap = database.getAllParameterV2(device.getName(),signal.getNumber(),2,1);
+                int startIntervalNumber = 0;
+                database.insertString();
+                IntStream.range(0, 289).parallel().forEach(i -> {
+                    try {
+                        //workWithDatabase database = new workWithDatabase();
+                        //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
+                        List<Double> signals = resultMap.get(i);
+                        int startIndex = 0;
+                        //Номер интервала как раз обнуляется с каждой карактеристикой
+                        int intervalNumber = 0;
+
+                        while(startIndex < signals.size()){
+                            List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
+                            for (int j = 0; j < result.size(); j++) {
+                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i*17+j, result.get(j));
+                            }
+                            startIndex += 10;
+                            intervalNumber++;
+                        }
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+                database.insertBatch();
+                database.close();
+            }
+        }
+    }
+
+
+    //тут определяем параметры для 4го уровня
+    public void calculateParametersFourth() throws Exception {
+
+        //workWithDatabase database = new workWithDatabase();
+        for (Device device : devices.values()) {
+            for(Signal signal : device.getAllSignal()) {
+                //database.insertString();
+                int startIntervalNumber = 0;
+                IntStream.range(0, 4913).parallel().forEach(i -> {
+                    try {
+                        workWithDatabase database = new workWithDatabase();
+                        //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
+                        List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),3,i);
+                        int startIndex = 0;
+                        //Номер интервала как раз обнуляется с каждой карактеристикой
+                        int intervalNumber = 0;
+                        database.insertString();
+                        while(startIndex < signals.size()){
+                            List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
+                            for (int j = 0; j < result.size(); j++) {
+                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i*17+j, result.get(j));
+                            }
+                            startIndex += 10;
+                            intervalNumber++;
+                        }
+                        database.insertBatch();
+                        database.close();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+    }
+
+    public void findPearson() throws Exception {
+        for(Device device : devices.values()){
+            for(Signal signal : device.getAllSignal()) {
+                workWithDatabase database = new workWithDatabase();
+                HashMap<Integer,List<Double>> result = database.getParameterV3(device.getName(),signal.getNumber());
+                System.out.println(result.size());
+                database.close();
+                IntStream.range(0, result.size()).parallel().forEach(i -> {
+                    try {
+                        workWithDatabase databaseRes = new workWithDatabase();
+                        double pearsonResult = Math.abs(FunctionV2.pearsonCorrelation(signal.getCoefficients(), result.get(i)));
+                        if (pearsonResult > 0.1) {
+                            databaseRes.insertPearson(device.getName(),"all",signal.getNumber(),4,i,pearsonResult);
+                        }
+                        databaseRes.close();
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+    }
+
+
+    //искать из кучи последних характеристик
+    public void findPearsonBatch() throws Exception {
+        for(Device device : devices.values()){
+            for(Signal signal : device.getAllSignal()) {
+                workWithDatabase database = new workWithDatabase();
+                HashMap<Integer,List<Double>> result = database.getParameterV6(device.getName(),signal.getNumber());
+                System.out.println(result.size());
+                database.insertPearsonString();
+                IntStream.range(0, result.size()).parallel().forEach(i -> {
+                    try {
+                        double pearsonResult = Math.abs(FunctionV2.pearsonCorrelation(signal.getCoefficients(), result.get(i)));
+                        if (pearsonResult > 0.1) {
+                            database.insertPearsonDataBatch(device.getName(),"all",signal.getNumber(),1,i,pearsonResult);
+                        }
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+                database.insertBatch();
+                database.close();
             }
         }
     }

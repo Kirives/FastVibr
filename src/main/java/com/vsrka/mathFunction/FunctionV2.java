@@ -39,11 +39,17 @@ public class FunctionV2 {
 
     public static double skewness(List<Double> data) {
         double std = standardDeviation(data);
+        if(Double.isNaN(centralMoment(data, 3) / Math.pow(std, 3))) {
+            return 0;
+        }
         return centralMoment(data, 3) / Math.pow(std, 3);
     }
 
     public static double kurtosis(List<Double> data) {
         double std = standardDeviation(data);
+        if(Double.isNaN(centralMoment(data, 4) / Math.pow(std, 4) - 3)) {
+            return 0;
+        }
         return centralMoment(data, 4) / Math.pow(std, 4) - 3;
     }
 
@@ -107,6 +113,31 @@ public class FunctionV2 {
             return 0;
         }
         return std / Math.sqrt(data.size());
+    }
+
+    public static double pearsonCorrelation(List<Double> x, List<Double> y) {
+        if (x == null || y == null || x.size() != y.size() || x.isEmpty()) {
+            return 0; // Возвращаем 0 или выбрасываем исключение, если списки пусты или их размеры не совпадают
+        }
+
+        int n = x.size();
+        double sumX = 0.0, sumY = 0.0, sumX2 = 0.0, sumY2 = 0.0, sumXY = 0.0;
+
+        for (int i = 0; i < n; i++) {
+            sumX += x.get(i);
+            sumY += y.get(i);
+            sumX2 += Math.pow(x.get(i), 2);
+            sumY2 += Math.pow(y.get(i), 2);
+            sumXY += x.get(i) * y.get(i);
+        }
+
+        double numerator = n * sumXY - sumX * sumY;
+        double denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+
+        if (denominator == 0) {
+            return 0; // Обрабатываем случай, когда знаменатель равен нулю
+        }
+        return numerator / denominator;
     }
 
 
