@@ -37,7 +37,7 @@ public class workWithDatabase {
 
     //Пакетная вставка в базу данных с полной передачей что и куда вставить
     public void insertString() throws SQLException{
-        String query ="INSERT INTO signals.devices4_2(device_name,signal_name,signal_number,interval_level,interval_number,characteristic_number,characteristic_value) VALUES(?,?,?,?,?,?,?)";
+        String query ="INSERT INTO signals.devices4_4(device_name,signal_name,signal_number,interval_level,interval_number,characteristic_number,characteristic_value) VALUES(?,?,?,?,?,?,?)";
         pstmt = conn.prepareStatement(query);
         conn.setAutoCommit(false);
     }
@@ -72,7 +72,7 @@ public class workWithDatabase {
 
     public List<Double> getAllParameter(String deviceName, int signalNumber, int intervalLevel, int characteristicNumber) throws Exception{
 
-        String query = "SELECT characteristic_value FROM signals.devices1_2 WHERE device_name = ? AND signal_number = ? AND interval_level = ? AND characteristic_number = ? ORDER BY interval_number";
+        String query = "SELECT characteristic_value FROM signals.devices1_4 WHERE device_name = ? AND signal_number = ? AND interval_level = ? AND characteristic_number = ? ORDER BY interval_number";
         pstmt = conn.prepareStatement(query);
         pstmt.setString(1,deviceName);
         pstmt.setInt(2,signalNumber);
@@ -90,7 +90,7 @@ public class workWithDatabase {
     }
 
     public HashMap<Integer,List<Double>> getAllParameterV2(String deviceName, int signalNumber, int intervalLevel, int characteristicNumber1) throws Exception{
-        String query = "SELECT characteristic_number,characteristic_value FROM signals.devices3_2 WHERE signal_number = ? AND interval_level = ?  ORDER BY characteristic_number,interval_number";
+        String query = "SELECT characteristic_number,characteristic_value FROM signals.devices3_4 WHERE signal_number = ? AND interval_level = ?  ORDER BY characteristic_number,interval_number";
         pstmt = conn.prepareStatement(query);
         pstmt.setInt(1,signalNumber);
         pstmt.setInt(2,intervalLevel);
@@ -134,7 +134,7 @@ public class workWithDatabase {
     }
 
     public void insertPearsonString() throws SQLException{
-        String query ="INSERT INTO signals.devicesParameter2(device_name,signal_name,signal_number,interval_level,characteristic_number,pearson_value) VALUES(?,?,?,?,?,?)";
+        String query ="INSERT INTO signals.o303_4_level(device_name,signal_name,signal_number,interval_level,characteristic_number,pearson_value) VALUES(?,?,?,?,?,?)";
         pstmt = conn.prepareStatement(query);
         conn.setAutoCommit(false);
     }
@@ -173,7 +173,7 @@ public class workWithDatabase {
     //Взятие последних характеристик
     public HashMap<Integer,List<Double>> getParameterV3(String deviceName, int signalNumber) throws Exception{
         HashMap<Integer,List<Double>> result = new HashMap<>(86000);
-        String query = "SELECT characteristic_number,characteristic_value FROM signals.devices6 WHERE signal_number=? order by characteristic_number , interval_number";
+        String query = "SELECT characteristic_number,characteristic_value FROM signals.devices4_4 WHERE signal_number=? order by characteristic_number , interval_number";
         pstmt = conn.prepareStatement(query);
         pstmt.setInt(1,signalNumber);
         ResultSet rs = pstmt.executeQuery();
@@ -189,7 +189,7 @@ public class workWithDatabase {
     //Взятие третьих характеристик
     public HashMap<Integer,List<Double>> getParameterV4(String deviceName, int signalNumber) throws Exception{
         HashMap<Integer,List<Double>> result = new HashMap<>(5000);
-        String query = "SELECT characteristic_number,characteristic_value,interval_number FROM signals.devices4 WHERE signal_number=? order by characteristic_number , interval_number";
+        String query = "SELECT characteristic_number,characteristic_value,interval_number FROM signals.devices3_4 WHERE signal_number=? order by characteristic_number , interval_number";
         pstmt = conn.prepareStatement(query);
         pstmt.setInt(1,signalNumber);
         ResultSet rs = pstmt.executeQuery();
@@ -209,7 +209,7 @@ public class workWithDatabase {
     //Взятие вторых характеристик
     public HashMap<Integer,List<Double>> getParameterV5(String deviceName, int signalNumber) throws Exception{
         HashMap<Integer,List<Double>> result = new HashMap<>(300);
-        String query = "SELECT characteristic_number,characteristic_value,interval_number FROM signals.devices3 WHERE signal_number=? order by characteristic_number , interval_number";
+        String query = "SELECT characteristic_number,characteristic_value,interval_number FROM signals.devices2_4 WHERE signal_number=? order by characteristic_number , interval_number";
         pstmt = conn.prepareStatement(query);
         pstmt.setInt(1,signalNumber);
         ResultSet rs = pstmt.executeQuery();
@@ -229,7 +229,7 @@ public class workWithDatabase {
     //Взятие первых характеристик
     public HashMap<Integer,List<Double>> getParameterV6(String deviceName, int signalNumber) throws Exception{
         HashMap<Integer,List<Double>> result = new HashMap<>(300);
-        String query = "SELECT characteristic_number,characteristic_value,interval_number FROM signals.devices1 WHERE signal_number=? order by characteristic_number , interval_number";
+        String query = "SELECT characteristic_number,characteristic_value,interval_number FROM signals.devices1_4 WHERE signal_number=? order by characteristic_number , interval_number";
         pstmt = conn.prepareStatement(query);
         pstmt.setInt(1,signalNumber);
         ResultSet rs = pstmt.executeQuery();

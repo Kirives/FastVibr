@@ -13,6 +13,12 @@ public class FunctionV2 {
         for (double x : data) {
             sum += Math.pow(x, k);
         }
+        if(Double.isNaN(sum / data.size())){
+            return 0;
+        }
+        if(Double.isInfinite(sum)){
+            return Double.MAX_VALUE;
+        }
         return sum / data.size();
     }
 
@@ -21,6 +27,12 @@ public class FunctionV2 {
         double sum = 0;
         for (double x : data) {
             sum += Math.pow(x - mean, k);
+        }
+        if(Double.isNaN(sum / data.size())){
+            return 0;
+        }
+        if(Double.isInfinite(sum)){
+            return Double.MAX_VALUE;
         }
         return sum / data.size();
     }

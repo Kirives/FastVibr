@@ -23,9 +23,12 @@ public class App
             //ФАЗА 1
             //test.calculateParameters();
             //test.calculateParametersSecondV2();
-            test.calculateParametersThirdV2();
-            //test.calculateParametersFourth();
+            //test.calculateParametersThirdV2();
+            //test.calculateParametersFourthV2();
             //test.findPearsonBatch();
+
+            test.calculateAll();
+
 
             System.out.println("testDir");
         }catch (Exception e) {
