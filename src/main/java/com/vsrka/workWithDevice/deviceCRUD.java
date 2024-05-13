@@ -442,9 +442,14 @@ public class deviceCRUD {
 
                     resultPeriod.add(new Period(resultParameter));
 
+
                     System.out.println(i);
 
                 }
+
+                //Тут все характеристики для каждого периода собраны, поэтому нужно считать коэф корреляции
+                //Это считается он
+                findPearsonBatch();
                 System.out.println("END");
             }
         }
