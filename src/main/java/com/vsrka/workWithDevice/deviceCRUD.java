@@ -406,6 +406,8 @@ public class deviceCRUD {
                 int startIndex = currSignal.size()%(SIZE_N*4-3);
                 int colIndex = (currSignal.size()-startIndex)/(SIZE_N*4-3);
 
+                List<Period> resultPeriod = new ArrayList<>();
+
                 for(int i=0;i<colIndex;i++){
 
                     //Потом с каждого хешмапа надо собрать последние
@@ -418,6 +420,28 @@ public class deviceCRUD {
                     thirdParameter=calculateAllSecondLVL(secondParameter);
                     HashMap<Integer,List<Double>> fourthParameter = new HashMap<>();
                     fourthParameter=calculateAllSecondLVL(thirdParameter);
+
+                    HashMap<Integer,List<Double>> resultParameter = new HashMap<>();
+                    resultParameter.put(0,new ArrayList<>());
+                    for(List<Double> curr: firstParameter.values()){
+                        resultParameter.get(0).add(curr.get(curr.size()-1));
+                    }
+                    resultParameter.put(1,new ArrayList<>());
+                    for(List<Double> curr: secondParameter.values()){
+                        resultParameter.get(1).add(curr.get(curr.size()-1));
+                    }
+                    resultParameter.put(2,new ArrayList<>());
+                    for(List<Double> curr: thirdParameter.values()){
+                        resultParameter.get(2).add(curr.get(curr.size()-1));
+                    }
+                    resultParameter.put(3,new ArrayList<>());
+                    for(List<Double> curr: fourthParameter.values()){
+                        resultParameter.get(3).add(curr.get(curr.size()-1));
+                    }
+                    //По сути можно все хешмапы писать в один чтобы легко управлять уровнями
+
+                    resultPeriod.add(new Period(resultParameter));
+
                     System.out.println(i);
 
                 }
