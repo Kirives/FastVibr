@@ -25,7 +25,7 @@ public class App
             //test.calculateParametersSecondV2();
             //test.calculateParametersThirdV2();
             //test.calculateParametersFourthV2();
-            test.findPearsonBatch();
+            //test.findPearsonBatch();
 
             test.calculateAll();
 

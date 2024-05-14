@@ -48,7 +48,7 @@ public class deviceCRUD {
                 device.setAllSignal(workWithExcel.readingFromExcel(file));
                 break;
         }
-        if (!devices.containsKey(deviceName)){
+        if (!devices.containsKey(deviceName)) {
             devices.put(deviceName, device);
         }
     }
@@ -57,12 +57,12 @@ public class deviceCRUD {
     public void insertToDatabse() throws Exception {
         workWithDatabase database = new workWithDatabase();
         //database.insertString();
-        for(Device device : devices.values()){
+        for (Device device : devices.values()) {
             //database.insertString();
-            for(Signal signal : device.getAllSignal()){
+            for (Signal signal : device.getAllSignal()) {
                 database.insertString();
-                for(int i = 0; i < signal.getSignal().size(); i++){
-                    database.insertDataBatch(device.getName(),"all",signal.getNumber(),0,i,0,signal.getSignal().get(i));
+                for (int i = 0; i < signal.getSignal().size(); i++) {
+                    database.insertDataBatch(device.getName(), "all", signal.getNumber(), 0, i, 0, signal.getSignal().get(i));
                 }
                 database.insertBatch();
             }
@@ -70,20 +70,20 @@ public class deviceCRUD {
         database.close();
     }
 
-    public void testPar(){
+    public void testPar() {
         calculateParameter(devices.get("мн-12").getAllSignal().get(0).getSignal());
     }
 
-    public List<Double> calculateParameter(List<Double> signal){
+    public List<Double> calculateParameter(List<Double> signal) {
         List<Double> result = new ArrayList<>();
 
-        result.add(FunctionV2.initialMoment(signal,1));
-        result.add(FunctionV2.initialMoment(signal,2));
-        result.add(FunctionV2.initialMoment(signal,3));
-        result.add(FunctionV2.initialMoment(signal,4));
-        result.add(FunctionV2.centralMoment(signal,2));
-        result.add(FunctionV2.centralMoment(signal,3));
-        result.add(FunctionV2.centralMoment(signal,4));
+        result.add(FunctionV2.initialMoment(signal, 1));
+        result.add(FunctionV2.initialMoment(signal, 2));
+        result.add(FunctionV2.initialMoment(signal, 3));
+        result.add(FunctionV2.initialMoment(signal, 4));
+        result.add(FunctionV2.centralMoment(signal, 2));
+        result.add(FunctionV2.centralMoment(signal, 3));
+        result.add(FunctionV2.centralMoment(signal, 4));
         result.add(FunctionV2.standardDeviation(signal));
         result.add(FunctionV2.minimum(signal));
         result.add(FunctionV2.maximum(signal));
@@ -122,7 +122,7 @@ public class deviceCRUD {
                 }
             }
             database.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -134,22 +134,22 @@ public class deviceCRUD {
 
         workWithDatabase database = new workWithDatabase();
         for (Device device : devices.values()) {
-            for(Signal signal : device.getAllSignal()) {
+            for (Signal signal : device.getAllSignal()) {
                 database.insertString();
                 int startIntervalNumber = 0;
 
 
-                for(int i = 0; i < 17; i++){
+                for (int i = 0; i < 17; i++) {
                     //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
-                    List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),1,i);
+                    List<Double> signals = database.getAllParameter(device.getName(), signal.getNumber(), 1, i);
                     int startIndex = 0;
                     //Номер интервала как раз обнуляется с каждой карактеристикой
                     int intervalNumber = 0;
                     database.insertString();
-                    while(startIndex < signals.size()){
+                    while (startIndex < signals.size()) {
                         List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
                         for (int j = 0; j < result.size(); j++) {
-                            database.insertDataBatch(device.getName(), "all", signal.getNumber(), 2, intervalNumber, i*17+j, result.get(j));
+                            database.insertDataBatch(device.getName(), "all", signal.getNumber(), 2, intervalNumber, i * 17 + j, result.get(j));
                         }
                         startIndex += 10;
                         intervalNumber++;
@@ -166,29 +166,29 @@ public class deviceCRUD {
 
         //workWithDatabase database = new workWithDatabase();
         for (Device device : devices.values()) {
-            for(Signal signal : device.getAllSignal()) {
+            for (Signal signal : device.getAllSignal()) {
                 //database.insertString();
                 int startIntervalNumber = 0;
                 IntStream.range(0, 17).parallel().forEach(i -> {
                     try {
                         workWithDatabase database = new workWithDatabase();
                         //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
-                        List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),1,i);
+                        List<Double> signals = database.getAllParameter(device.getName(), signal.getNumber(), 1, i);
                         int startIndex = 0;
                         //Номер интервала как раз обнуляется с каждой карактеристикой
                         int intervalNumber = 0;
                         database.insertString();
-                        while(startIndex < signals.size()){
+                        while (startIndex < signals.size()) {
                             List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
                             for (int j = 0; j < result.size(); j++) {
-                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 2, intervalNumber, i*17+j, result.get(j));
+                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 2, intervalNumber, i * 17 + j, result.get(j));
                             }
                             startIndex += 10;
                             intervalNumber++;
                         }
                         database.insertBatch();
                         database.close();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -201,22 +201,22 @@ public class deviceCRUD {
 
         workWithDatabase database = new workWithDatabase();
         for (Device device : devices.values()) {
-            for(Signal signal : device.getAllSignal()) {
+            for (Signal signal : device.getAllSignal()) {
                 database.insertString();
                 int startIntervalNumber = 0;
 
 
-                for(int i = 0; i < 289; i++){
+                for (int i = 0; i < 289; i++) {
                     //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
-                    List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),2,i);
+                    List<Double> signals = database.getAllParameter(device.getName(), signal.getNumber(), 2, i);
                     int startIndex = 0;
                     //Номер интервала как раз обнуляется с каждой карактеристикой
                     int intervalNumber = 0;
                     database.insertString();
-                    while(startIndex < signals.size()){
+                    while (startIndex < signals.size()) {
                         List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
                         for (int j = 0; j < result.size(); j++) {
-                            database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i*17+j, result.get(j));
+                            database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i * 17 + j, result.get(j));
                         }
                         startIndex += 10;
                         intervalNumber++;
@@ -233,10 +233,10 @@ public class deviceCRUD {
 
         //workWithDatabase database = new workWithDatabase();
         for (Device device : devices.values()) {
-            for(Signal signal : device.getAllSignal()) {
+            for (Signal signal : device.getAllSignal()) {
                 //database.insertString();
                 workWithDatabase database = new workWithDatabase();
-                HashMap<Integer,List<Double>> resultMap = database.getAllParameterV2(device.getName(),signal.getNumber(),2,1);
+                HashMap<Integer, List<Double>> resultMap = database.getAllParameterV2(device.getName(), signal.getNumber(), 2, 1);
                 int startIntervalNumber = 0;
                 database.insertString();
                 IntStream.range(0, 289).parallel().forEach(i -> {
@@ -248,16 +248,16 @@ public class deviceCRUD {
                         //Номер интервала как раз обнуляется с каждой карактеристикой
                         int intervalNumber = 0;
 
-                        while(startIndex < signals.size()){
+                        while (startIndex < signals.size()) {
                             List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
                             for (int j = 0; j < result.size(); j++) {
-                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i*17+j, result.get(j));
+                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i * 17 + j, result.get(j));
                             }
                             startIndex += 10;
                             intervalNumber++;
                         }
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -273,29 +273,29 @@ public class deviceCRUD {
 
         //workWithDatabase database = new workWithDatabase();
         for (Device device : devices.values()) {
-            for(Signal signal : device.getAllSignal()) {
+            for (Signal signal : device.getAllSignal()) {
                 //database.insertString();
                 int startIntervalNumber = 0;
                 IntStream.range(0, 4913).parallel().forEach(i -> {
                     try {
                         workWithDatabase database = new workWithDatabase();
                         //Тут мы получаем уже конкретный номер характеристики и идём уже по номерам
-                        List<Double> signals = database.getAllParameter(device.getName(),signal.getNumber(),3,i);
+                        List<Double> signals = database.getAllParameter(device.getName(), signal.getNumber(), 3, i);
                         int startIndex = 0;
                         //Номер интервала как раз обнуляется с каждой карактеристикой
                         int intervalNumber = 0;
                         database.insertString();
-                        while(startIndex < signals.size()){
+                        while (startIndex < signals.size()) {
                             List<Double> result = calculateParameter(signals.subList(startIndex, startIndex + 10));
                             for (int j = 0; j < result.size(); j++) {
-                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i*17+j, result.get(j));
+                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 3, intervalNumber, i * 17 + j, result.get(j));
                             }
                             startIndex += 10;
                             intervalNumber++;
                         }
                         database.insertBatch();
                         database.close();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -308,10 +308,10 @@ public class deviceCRUD {
 
         //workWithDatabase database = new workWithDatabase();
         for (Device device : devices.values()) {
-            for(Signal signal : device.getAllSignal()) {
+            for (Signal signal : device.getAllSignal()) {
                 //database.insertString();
                 workWithDatabase database = new workWithDatabase();
-                HashMap<Integer,List<Double>> resultMap = database.getAllParameterV2(device.getName(),signal.getNumber(),3,1);
+                HashMap<Integer, List<Double>> resultMap = database.getAllParameterV2(device.getName(), signal.getNumber(), 3, 1);
                 int startIntervalNumber = 0;
                 database.insertString();
                 IntStream.range(0, 4913).parallel().forEach(i -> {
@@ -323,17 +323,17 @@ public class deviceCRUD {
                         //Номер интервала как раз обнуляется с каждой карактеристикой
                         int intervalNumber = 0;
 
-                        while(startIndex < signals.size()){
-                            int maxIndex = Math.min(signals.size(),startIndex+10);
-                            List<Double> result = calculateParameter(signals.subList(startIndex,maxIndex));
+                        while (startIndex < signals.size()) {
+                            int maxIndex = Math.min(signals.size(), startIndex + 10);
+                            List<Double> result = calculateParameter(signals.subList(startIndex, maxIndex));
                             for (int j = 0; j < result.size(); j++) {
-                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 4, intervalNumber, i*17+j, result.get(j));
+                                database.insertDataBatch(device.getName(), "all", signal.getNumber(), 4, intervalNumber, i * 17 + j, result.get(j));
                             }
                             startIndex += 10;
                             intervalNumber++;
                         }
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -344,10 +344,10 @@ public class deviceCRUD {
     }
 
     public void findPearson() throws Exception {
-        for(Device device : devices.values()){
-            for(Signal signal : device.getAllSignal()) {
+        for (Device device : devices.values()) {
+            for (Signal signal : device.getAllSignal()) {
                 workWithDatabase database = new workWithDatabase();
-                HashMap<Integer,List<Double>> result = database.getParameterV3(device.getName(),signal.getNumber());
+                HashMap<Integer, List<Double>> result = database.getParameterV3(device.getName(), signal.getNumber());
                 System.out.println(result.size());
                 database.close();
                 IntStream.range(0, result.size()).parallel().forEach(i -> {
@@ -355,11 +355,11 @@ public class deviceCRUD {
                         workWithDatabase databaseRes = new workWithDatabase();
                         double pearsonResult = Math.abs(FunctionV2.pearsonCorrelation(signal.getCoefficients(), result.get(i)));
                         if (pearsonResult > 0.1) {
-                            databaseRes.insertPearson(device.getName(),"all",signal.getNumber(),4,i,pearsonResult);
+                            databaseRes.insertPearson(device.getName(), "all", signal.getNumber(), 4, i, pearsonResult);
                         }
                         databaseRes.close();
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -370,20 +370,20 @@ public class deviceCRUD {
 
     //искать из кучи последних характеристик
     public void findPearsonBatch() throws Exception {
-        for(Device device : devices.values()){
-            for(Signal signal : device.getAllSignal()) {
+        for (Device device : devices.values()) {
+            for (Signal signal : device.getAllSignal()) {
                 workWithDatabase database = new workWithDatabase();
-                HashMap<Integer,List<Double>> result = database.getParameterV3(device.getName(),signal.getNumber());
+                HashMap<Integer, List<Double>> result = database.getParameterV3(device.getName(), signal.getNumber());
                 System.out.println(result.size());
                 database.insertPearsonString();
                 IntStream.range(0, result.size()).parallel().forEach(i -> {
                     try {
                         double pearsonResult = Math.abs(FunctionV2.pearsonCorrelation(signal.getCoefficients(), result.get(i)));
                         if (pearsonResult > 0.1) {
-                            database.insertPearsonDataBatch(device.getName(),"all",signal.getNumber(),1,i,pearsonResult);
+                            database.insertPearsonDataBatch(device.getName(), "all", signal.getNumber(), 1, i, pearsonResult);
                         }
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -394,8 +394,9 @@ public class deviceCRUD {
     }
 
 
-    static int SIZE_N=500;
-    public void calculateAll() throws Exception{
+    static int SIZE_N = 500;
+
+    public void calculateAll() throws Exception {
 
         for (Device device : devices.values()) {
 
@@ -403,45 +404,50 @@ public class deviceCRUD {
 
                 List<Double> currSignal = signal.getSignal();
 
-                int startIndex = currSignal.size()%(SIZE_N*4-3);
-                int colIndex = (currSignal.size()-startIndex)/(SIZE_N*4-3);
+                int startIndex = currSignal.size() % (SIZE_N * 4 - 3);
+                int colIndex = (currSignal.size() - startIndex) / (SIZE_N * 4 - 3);
 
-                List<Period> resultPeriod = new ArrayList<>();
+//                List<Period> resultPeriod = new ArrayList<>();
+                Period period = new Period();
 
-                for(int i=0;i<colIndex;i++){
+                for (int i = 0; i < colIndex; i++) {
 
                     //Потом с каждого хешмапа надо собрать последние
                     //Сначала должно идти вычисление первого уровня
-                    HashMap<Integer,List<Double>> firstParameter = new HashMap<>();
-                    firstParameter=calculateAllFirstLVL(currSignal.subList(i*startIndex,i*startIndex+SIZE_N*4-3));
-                    HashMap<Integer,List<Double>> secondParameter = new HashMap<>();
-                    secondParameter=calculateAllSecondLVL(firstParameter);
-                    HashMap<Integer,List<Double>> thirdParameter = new HashMap<>();
-                    thirdParameter=calculateAllSecondLVL(secondParameter);
-                    HashMap<Integer,List<Double>> fourthParameter = new HashMap<>();
-                    fourthParameter=calculateAllSecondLVL(thirdParameter);
+                    HashMap<Integer, List<Double>> firstParameter = new HashMap<>();
+                    firstParameter = calculateAllFirstLVL(currSignal.subList(i * startIndex, i * startIndex + SIZE_N * 4 - 3));
+                    HashMap<Integer, List<Double>> secondParameter = new HashMap<>();
+                    secondParameter = calculateAllSecondLVL(firstParameter);
+                    HashMap<Integer, List<Double>> thirdParameter = new HashMap<>();
+                    thirdParameter = calculateAllSecondLVL(secondParameter);
+                    HashMap<Integer, List<Double>> fourthParameter = new HashMap<>();
+                    fourthParameter = calculateAllSecondLVL(thirdParameter);
 
-                    HashMap<Integer,List<Double>> resultParameter = new HashMap<>();
-                    resultParameter.put(0,new ArrayList<>());
-                    for(List<Double> curr: firstParameter.values()){
-                        resultParameter.get(0).add(curr.get(curr.size()-1));
-                    }
-                    resultParameter.put(1,new ArrayList<>());
-                    for(List<Double> curr: secondParameter.values()){
-                        resultParameter.get(1).add(curr.get(curr.size()-1));
-                    }
-                    resultParameter.put(2,new ArrayList<>());
-                    for(List<Double> curr: thirdParameter.values()){
-                        resultParameter.get(2).add(curr.get(curr.size()-1));
-                    }
-                    resultParameter.put(3,new ArrayList<>());
-                    for(List<Double> curr: fourthParameter.values()){
-                        resultParameter.get(3).add(curr.get(curr.size()-1));
-                    }
-                    //По сути можно все хешмапы писать в один чтобы легко управлять уровнями
+//                    HashMap<Integer,List<Double>> resultParameter = new HashMap<>();
+//                    resultParameter.put(0,new ArrayList<>());
+//                    for(List<Double> curr: firstParameter.values()){
+//                        resultParameter.get(0).add(curr.get(curr.size()-1));
+//                    }
+//                    resultParameter.put(1,new ArrayList<>());
+//                    for(List<Double> curr: secondParameter.values()){
+//                        resultParameter.get(1).add(curr.get(curr.size()-1));
+//                    }
+//                    resultParameter.put(2,new ArrayList<>());
+//                    for(List<Double> curr: thirdParameter.values()){
+//                        resultParameter.get(2).add(curr.get(curr.size()-1));
+//                    }
+//                    resultParameter.put(3,new ArrayList<>());
+//                    for(List<Double> curr: fourthParameter.values()){
+//                        resultParameter.get(3).add(curr.get(curr.size()-1));
+//                    }
+//                    //По сути можно все хешмапы писать в один чтобы легко управлять уровнями
+//
+//                    resultPeriod.add(new Period(resultParameter));
 
-                    resultPeriod.add(new Period(resultParameter));
-
+                    period.setFirstLevelParameters(firstParameter);
+                    period.setSecondLevelParameters(secondParameter);
+                    period.setThirdLevelParameters(thirdParameter);
+                    period.setFourthLevelParameters(fourthParameter);
 
                     System.out.println(i);
 
@@ -456,16 +462,16 @@ public class deviceCRUD {
 
     }
 
-    private HashMap<Integer,List<Double>> calculateAllFirstLVL(List<Double> signal) throws Exception {
+    private HashMap<Integer, List<Double>> calculateAllFirstLVL(List<Double> signal) throws Exception {
 
-        HashMap<Integer,List<Double>> result = new HashMap<>();
+        HashMap<Integer, List<Double>> result = new HashMap<>();
 
-        for(int i=0;i<signal.size()-SIZE_N+1;i++){
-            List<Double> resultPar = calculateParameter(signal.subList(i,SIZE_N+i));
-            for(int j=0;j<resultPar.size();j++){
-                List<Double> curr =result.getOrDefault(j,new ArrayList<>());
+        for (int i = 0; i < signal.size() - SIZE_N + 1; i++) {
+            List<Double> resultPar = calculateParameter(signal.subList(i, SIZE_N + i));
+            for (int j = 0; j < resultPar.size(); j++) {
+                List<Double> curr = result.getOrDefault(j, new ArrayList<>());
                 curr.add(resultPar.get(j));
-                result.put(j,curr);
+                result.put(j, curr);
             }
         }
 
@@ -473,19 +479,19 @@ public class deviceCRUD {
 
     }
 
-    private HashMap<Integer,List<Double>> calculateAllSecondLVL(HashMap<Integer,List<Double>> parameters) throws Exception {
+    private HashMap<Integer, List<Double>> calculateAllSecondLVL(HashMap<Integer, List<Double>> parameters) throws Exception {
 
-        HashMap<Integer,List<Double>> result = new HashMap<>();
+        HashMap<Integer, List<Double>> result = new HashMap<>();
 
         IntStream.range(0, parameters.size()).parallel().forEach(z -> {
 
             try {
 
                 List<Double> listPar = parameters.get(z);
-                for(int i=0;i<listPar.size()-SIZE_N+1;i++){
-                    List<Double> resultPar = calculateParameter(listPar.subList(i,SIZE_N+i));
-                    for(int j=0;j<resultPar.size();j++){
-                        int number = z*17+j;
+                for (int i = 0; i < listPar.size() - SIZE_N + 1; i++) {
+                    List<Double> resultPar = calculateParameter(listPar.subList(i, SIZE_N + i));
+                    for (int j = 0; j < resultPar.size(); j++) {
+                        int number = z * 17 + j;
                         synchronized (result) {
                             List<Double> curr = result.getOrDefault(number, new ArrayList<>());
                             curr.add(resultPar.get(j));
@@ -493,7 +499,7 @@ public class deviceCRUD {
                         }
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
