@@ -134,7 +134,7 @@ public class workWithDatabase {
     }
 
     public void insertPearsonString() throws SQLException{
-        String query ="INSERT INTO signals.o303_4_level(device_name,signal_name,signal_number,interval_level,characteristic_number,pearson_value) VALUES(?,?,?,?,?,?)";
+        String query ="INSERT INTO signals.devicesParameter_test(device_name,signal_name,signal_number,interval_level,characteristic_number,pearson_value) VALUES(?,?,?,?,?,?)";
         pstmt = conn.prepareStatement(query);
         conn.setAutoCommit(false);
     }

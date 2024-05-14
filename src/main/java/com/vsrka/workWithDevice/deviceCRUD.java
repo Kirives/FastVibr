@@ -410,12 +410,14 @@ public class deviceCRUD {
 //                List<Period> resultPeriod = new ArrayList<>();
                 Period period = new Period();
 
+                int stepSignal = SIZE_N * 4 - 3;
+
                 for (int i = 0; i < colIndex; i++) {
 
                     //Потом с каждого хешмапа надо собрать последние
                     //Сначала должно идти вычисление первого уровня
                     HashMap<Integer, List<Double>> firstParameter = new HashMap<>();
-                    firstParameter = calculateAllFirstLVL(currSignal.subList(i * startIndex, i * startIndex + SIZE_N * 4 - 3));
+                    firstParameter = calculateAllFirstLVL(currSignal.subList(startIndex+stepSignal*i, startIndex + stepSignal*(i+1)));
                     HashMap<Integer, List<Double>> secondParameter = new HashMap<>();
                     secondParameter = calculateAllSecondLVL(firstParameter);
                     HashMap<Integer, List<Double>> thirdParameter = new HashMap<>();
@@ -431,12 +433,19 @@ public class deviceCRUD {
 
                 }
 
+                try {
+                    period.saveToJson(device.getName()+signal.getNumber()+".json");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 //Тут все характеристики для каждого периода собраны, поэтому нужно считать коэф корреляции
                 //Это считается он
                 findPearsonAll(period.getFirstLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),1);
                 findPearsonAll(period.getSecondLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),2);
-                findPearsonAll(period.getThirdLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),2);
-                findPearsonAll(period.getFourthLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),2);
+                findPearsonAll(period.getThirdLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),3);
+                findPearsonAll(period.getFourthLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),4);
                 System.out.println("END");
             }
         }

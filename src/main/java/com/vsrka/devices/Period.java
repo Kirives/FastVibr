@@ -1,12 +1,15 @@
 package com.vsrka.devices;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.lang.reflect.Type;
 
 public class Period {
 
-    HashMap<Integer,List<Double>> allParameters;
     private HashMap<Integer,List<Double>> FirstLevelParameters;
     private HashMap<Integer,List<Double>> SecondLevelParameters;
     private HashMap<Integer,List<Double>> ThirdLevelParameters;
@@ -17,6 +20,33 @@ public class Period {
         SecondLevelParameters = new HashMap<>(300);
         ThirdLevelParameters = new HashMap<>(5000);
         FourthLevelParameters = new HashMap<>(85000);
+    }
+
+    public void saveToJson(String filePath) throws IOException {
+        Gson gson = new Gson();
+        HashMap<String, HashMap<Integer, List<Double>>> allData = new HashMap<>();
+        allData.put("FirstLevelParameters", FirstLevelParameters);
+        allData.put("SecondLevelParameters", SecondLevelParameters);
+        allData.put("ThirdLevelParameters", ThirdLevelParameters);
+        allData.put("FourthLevelParameters", FourthLevelParameters);
+
+        try (Writer writer = new FileWriter(filePath)) {
+            gson.toJson(allData, writer);
+        }
+    }
+
+    // Десериализация из JSON файла
+    public void loadFromJson(String filePath) throws IOException {
+        Gson gson = new Gson();
+        Type type = new TypeToken<HashMap<String, HashMap<Integer, List<Double>>>>() {}.getType();
+
+        try (Reader reader = new FileReader(filePath)) {
+            HashMap<String, HashMap<Integer, List<Double>>> allData = gson.fromJson(reader, type);
+            FirstLevelParameters = allData.get("FirstLevelParameters");
+            SecondLevelParameters = allData.get("SecondLevelParameters");
+            ThirdLevelParameters = allData.get("ThirdLevelParameters");
+            FourthLevelParameters = allData.get("FourthLevelParameters");
+        }
     }
 
     public void setFirstLevelParameters(HashMap<Integer, List<Double>> firstLevelParameters) {

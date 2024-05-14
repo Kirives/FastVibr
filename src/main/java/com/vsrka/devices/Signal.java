@@ -50,8 +50,9 @@ public class Signal {
         Double max = FunctionV2.maximum(signal.subList(startIndex, signal.size()));
         Double min = FunctionV2.minimum(signal.subList(startIndex, signal.size()));
         Double step = (max-min)/200;
+        int stepSignal = SIZE_N * 4 - 3;
         for(int i=0;i<colIndex;i++) {
-            Double intervalMax = FunctionV2.maximum(getSignal().subList(i * startIndex, i * startIndex + SIZE_N * 4 - 3));
+            Double intervalMax = FunctionV2.maximum(getSignal().subList(startIndex+stepSignal*i, startIndex + stepSignal*(i+1)));
             int znam = (int) ((intervalMax-min)/step);
             if(i==0){
                 coefficients.add((double) (znam/200.0));
