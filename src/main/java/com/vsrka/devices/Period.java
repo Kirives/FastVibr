@@ -50,4 +50,20 @@ public class Period {
             FourthLevelParameters.put(i,curr);
         }
     }
+
+    public HashMap<Integer, List<Double>> getFirstLevelParameters() {
+        return FirstLevelParameters;
+    }
+
+    public HashMap<Integer, List<Double>> getSecondLevelParameters() {
+        return SecondLevelParameters;
+    }
+
+    public HashMap<Integer, List<Double>> getThirdLevelParameters() {
+        return ThirdLevelParameters;
+    }
+
+    public HashMap<Integer, List<Double>> getFourthLevelParameters() {
+        return FourthLevelParameters;
+    }
 }

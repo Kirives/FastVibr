@@ -422,28 +422,6 @@ public class deviceCRUD {
                     thirdParameter = calculateAllSecondLVL(secondParameter);
                     HashMap<Integer, List<Double>> fourthParameter = new HashMap<>();
                     fourthParameter = calculateAllSecondLVL(thirdParameter);
-
-//                    HashMap<Integer,List<Double>> resultParameter = new HashMap<>();
-//                    resultParameter.put(0,new ArrayList<>());
-//                    for(List<Double> curr: firstParameter.values()){
-//                        resultParameter.get(0).add(curr.get(curr.size()-1));
-//                    }
-//                    resultParameter.put(1,new ArrayList<>());
-//                    for(List<Double> curr: secondParameter.values()){
-//                        resultParameter.get(1).add(curr.get(curr.size()-1));
-//                    }
-//                    resultParameter.put(2,new ArrayList<>());
-//                    for(List<Double> curr: thirdParameter.values()){
-//                        resultParameter.get(2).add(curr.get(curr.size()-1));
-//                    }
-//                    resultParameter.put(3,new ArrayList<>());
-//                    for(List<Double> curr: fourthParameter.values()){
-//                        resultParameter.get(3).add(curr.get(curr.size()-1));
-//                    }
-//                    //По сути можно все хешмапы писать в один чтобы легко управлять уровнями
-//
-//                    resultPeriod.add(new Period(resultParameter));
-
                     period.setFirstLevelParameters(firstParameter);
                     period.setSecondLevelParameters(secondParameter);
                     period.setThirdLevelParameters(thirdParameter);
@@ -455,7 +433,10 @@ public class deviceCRUD {
 
                 //Тут все характеристики для каждого периода собраны, поэтому нужно считать коэф корреляции
                 //Это считается он
-                findPearsonBatch();
+                findPearsonAll(period.getFirstLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),1);
+                findPearsonAll(period.getSecondLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),2);
+                findPearsonAll(period.getThirdLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),2);
+                findPearsonAll(period.getFourthLevelParameters(),signal.getCoefficients(),device.getName(),signal.getNumber(),2);
                 System.out.println("END");
             }
         }
@@ -505,6 +486,24 @@ public class deviceCRUD {
 
         });
         return result;
+    }
+
+    private void findPearsonAll(HashMap<Integer,List<Double>> parameters,List<Double> coefficients,String deviceName,int numberSignal,int intervalLevel) throws Exception {
+        workWithDatabase database = new workWithDatabase();
+        database.insertPearsonString();
+        IntStream.range(0, parameters.size()).parallel().forEach(i -> {
+            try {
+                double pearsonResult = Math.abs(FunctionV2.pearsonCorrelation(coefficients, parameters.get(i)));
+                if (pearsonResult > 0.1) {
+                    database.insertPearsonDataBatch(deviceName, "all", numberSignal, intervalLevel, i, pearsonResult);
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+        database.insertBatch();
+        database.close();
     }
 
 }
