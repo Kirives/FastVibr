@@ -5,18 +5,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//Используется-правильна-работает
-public class FunctionV2 {
+public class Function {
 
     public static double initialMoment(List<Double> data, int k) {
         double sum = 0;
         for (double x : data) {
             sum += Math.pow(x, k);
         }
-        if(Double.isNaN(sum / data.size())){
+        if (Double.isNaN(sum / data.size())) {
             return 0;
         }
-        if(Double.isInfinite(sum)){
+        if (Double.isInfinite(sum)) {
             return Double.MAX_VALUE;
         }
         return sum / data.size();
@@ -28,10 +27,10 @@ public class FunctionV2 {
         for (double x : data) {
             sum += Math.pow(x - mean, k);
         }
-        if(Double.isNaN(sum / data.size())){
+        if (Double.isNaN(sum / data.size())) {
             return 0;
         }
-        if(Double.isInfinite(sum)){
+        if (Double.isInfinite(sum)) {
             return Double.MAX_VALUE;
         }
         return sum / data.size();
@@ -51,7 +50,7 @@ public class FunctionV2 {
 
     public static double skewness(List<Double> data) {
         double std = standardDeviation(data);
-        if(Double.isNaN(centralMoment(data, 3) / Math.pow(std, 3))) {
+        if (Double.isNaN(centralMoment(data, 3) / Math.pow(std, 3))) {
             return 0;
         }
         return centralMoment(data, 3) / Math.pow(std, 3);
@@ -59,7 +58,7 @@ public class FunctionV2 {
 
     public static double kurtosis(List<Double> data) {
         double std = standardDeviation(data);
-        if(Double.isNaN(centralMoment(data, 4) / Math.pow(std, 4) - 3)) {
+        if (Double.isNaN(centralMoment(data, 4) / Math.pow(std, 4) - 3)) {
             return 0;
         }
         return centralMoment(data, 4) / Math.pow(std, 4) - 3;
@@ -76,21 +75,20 @@ public class FunctionV2 {
         }
     }
 
-
     public static double meanInRange(List<Double> data) {
-        double min=minimum(data);
+        double min = minimum(data);
         double max = maximum(data);
         List<Double> transformed = data.stream()
                 .map(x -> (x - min) / (max - min))
                 .collect(Collectors.toList());
-        if(Double.isNaN(initialMoment(transformed, 1))){
+        if (Double.isNaN(initialMoment(transformed, 1))) {
             return 0;
         }
         return initialMoment(transformed, 1);
     }
 
     public static double stdInRange(List<Double> data) {
-        double min=minimum(data);
+        double min = minimum(data);
         double max = maximum(data);
         double mean = meanInRange(data);
         List<Double> transformed = data.stream()
@@ -100,28 +98,28 @@ public class FunctionV2 {
         for (double y : transformed) {
             sum += Math.pow(y - mean, 2);
         }
-        if(Double.isNaN(Math.sqrt(sum / (data.size() - 1)))){
+        if (Double.isNaN(Math.sqrt(sum / (data.size() - 1)))) {
             return 0;
         }
         return Math.sqrt(sum / (data.size() - 1));
     }
 
     public static double variationCoeffInRange(List<Double> data) {
-        double min=minimum(data);
+        double min = minimum(data);
         double max = maximum(data);
         double mean = meanInRange(data);
         double std = stdInRange(data);
-        if(Double.isNaN(std / mean)){
+        if (Double.isNaN(std / mean)) {
             return 0;
         }
         return std / mean;
     }
 
     public static double stdErrorInRange(List<Double> data) {
-        double min=minimum(data);
+        double min = minimum(data);
         double max = maximum(data);
         double std = stdInRange(data);
-        if(Double.isNaN(std / Math.sqrt(data.size()))){
+        if (Double.isNaN(std / Math.sqrt(data.size()))) {
             return 0;
         }
         return std / Math.sqrt(data.size());
@@ -151,6 +149,4 @@ public class FunctionV2 {
         }
         return numerator / denominator;
     }
-
-
 }

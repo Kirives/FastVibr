@@ -11,7 +11,7 @@ public class workWithDirectory {
         File dir = new File(directoryName);
         File[] files = dir.listFiles();
         for (File file : files) {
-            list.add(directoryName+"\\"+file.getName());
+            list.add(directoryName + "\\" + file.getName());
         }
         return list;
     }
